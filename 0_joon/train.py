@@ -4,7 +4,7 @@ import argparse
 import numpy as np
 
 from data import create_dataset
-from models import create_model
+from model import create_model
 import matplotlib.pyplot as plt
 
 if __name__ == "__main__":
@@ -36,7 +36,8 @@ if __name__ == "__main__":
     print("{} data loaded".format(len(dataset)))
 
     model = create_model(opt)      # create a model given opt.model and other options
-    model.setup(opt)
+    print(model)
+    # model.setup(opt)
 
     # for epoch in range(opt.epoch_count, opt.n_epochs + opt.n_epochs_decay + 1):    # outer loop for different epochs; we save the model by <epoch_count>, <epoch_count>+<save_latest_freq>
     #     print(epoch)

@@ -367,6 +367,9 @@ class ResnetGenerator(nn.Module):
         model += [nn.Tanh()]
 
         self.model = nn.Sequential(*model)
+        print("###################################################")
+        print(self.model)
+        print("###################################################")
 
     def forward(self, input):
         """Standard forward"""

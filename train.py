@@ -41,7 +41,7 @@ if __name__ == '__main__':
             print("  B_paths:", len(data["B_paths"]))
             break
         break
-    # model = create_model(opt)      # create a model given opt.model and other options
+    model = create_model(opt)      # create a model given opt.model and other options
     # model.setup(opt)               # regular setup: load and print networks; create schedulers
     # visualizer = Visualizer(opt)   # create a visualizer that display/save images and plots
     # total_iters = 0                # the total number of training iterations
