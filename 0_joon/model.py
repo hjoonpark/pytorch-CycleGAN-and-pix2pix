@@ -1,5 +1,5 @@
+import os
 import torch
-
 import torch.nn as nn
 import functools
 from collections import OrderedDict
@@ -66,6 +66,10 @@ class Pix2PixModel2(nn.Module):
 
             self.register_buffer('real_label', torch.tensor(1.0))
             self.register_buffer('fake_label', torch.tensor(0.0))
+
+            self.model_names = ['G', 'D']
+        else:  # during test time, only load G
+            self.model_names = ['G']
 
     def define_D(self, input_nc, ndf=64, n_layers=3):
         kw = 4
@@ -225,6 +229,17 @@ class Pix2PixModel2(nn.Module):
                 errors_ret[name] = float(getattr(self, 'loss_' + name))  # float(...) works for both scalar tensor and float number
         return errors_ret
 
+    def save_networks(self, save_path):
+        """Save all the networks to the disk.
+
+        Parameters:
+            epoch (int) -- current epoch; used in the file name '%s_net_%s.pth' % (epoch, name)
+        """
+        for name in self.model_names:
+            if isinstance(name, str):
+                net = getattr(self, 'net' + name)
+                torch.save(net.state_dict(), save_path)
+                    
 def create_model(device, opt):
     
     return Pix2PixModel2(device, opt.input_nc, opt.output_nc, opt.lr, opt.beta1, opt.isTrain).to(device)

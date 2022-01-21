@@ -42,3 +42,6 @@ test/data/legacy_serialized.pt
 *~
 .idea
 edges2shoes/
+log/
+model/
+nohup.out
