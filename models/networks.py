@@ -191,7 +191,6 @@ def define_D(input_nc, ndf, netD, n_layers_D=3, norm='batch', init_type='normal'
     """
     net = None
     norm_layer = get_norm_layer(norm_type=norm)
-
     if netD == 'basic':  # default PatchGAN classifier
         net = NLayerDiscriminator(input_nc, ndf, n_layers=3, norm_layer=norm_layer)
     elif netD == 'n_layers':  # more options
@@ -367,9 +366,6 @@ class ResnetGenerator(nn.Module):
         model += [nn.Tanh()]
 
         self.model = nn.Sequential(*model)
-        print("###################################################")
-        print(self.model)
-        print("###################################################")
 
     def forward(self, input):
         """Standard forward"""

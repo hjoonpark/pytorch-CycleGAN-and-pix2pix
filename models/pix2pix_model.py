@@ -59,7 +59,6 @@ class Pix2PixModel(BaseModel):
         if self.isTrain:  # define a discriminator; conditional GANs need to take both input and output images; Therefore, #channels for D is input_nc + output_nc
             self.netD = networks.define_D(opt.input_nc + opt.output_nc, opt.ndf, opt.netD,
                                           opt.n_layers_D, opt.norm, opt.init_type, opt.init_gain, self.gpu_ids)
-
         if self.isTrain:
             # define loss functions
             self.criterionGAN = networks.GANLoss(opt.gan_mode).to(self.device)
@@ -85,7 +84,10 @@ class Pix2PixModel(BaseModel):
 
     def forward(self):
         """Run forward pass; called by both functions <optimize_parameters> and <test>."""
+        print("forward")
         self.fake_B = self.netG(self.real_A)  # G(A)
+        print("\tself.real_A:", self.real_A.shape)
+        print("\tself.fake_B:", self.fake_B.shape)
 
     def backward_D(self):
         """Calculate GAN loss for the discriminator"""
@@ -93,10 +95,18 @@ class Pix2PixModel(BaseModel):
         fake_AB = torch.cat((self.real_A, self.fake_B), 1)  # we use conditional GANs; we need to feed both input and output to the discriminator
         pred_fake = self.netD(fake_AB.detach())
         self.loss_D_fake = self.criterionGAN(pred_fake, False)
+        print("backward_D")
+        print("\tfake_AB:", fake_AB.shape)
+        print("\tpred_fake:", pred_fake.shape)
+        print("\tself.loss_D_fake:", self.loss_D_fake.shape)
         # Real
         real_AB = torch.cat((self.real_A, self.real_B), 1)
         pred_real = self.netD(real_AB)
         self.loss_D_real = self.criterionGAN(pred_real, True)
+        print("# Real")
+        print("\treal_AB:", real_AB.shape)
+        print("\tpred_real:", pred_real.shape)
+        print("\tself.loss_D_real:", self.loss_D_real.shape)
         # combine loss and calculate gradients
         self.loss_D = (self.loss_D_fake + self.loss_D_real) * 0.5
         self.loss_D.backward()
@@ -112,8 +122,15 @@ class Pix2PixModel(BaseModel):
         # combine loss and calculate gradients
         self.loss_G = self.loss_G_GAN + self.loss_G_L1
         self.loss_G.backward()
+        print("backward_G")
+        print("\tfake_AB:", fake_AB.shape)
+        print("\tself.loss_G_GAN:", self.loss_G_GAN.shape)
+        print("\tself.loss_G_L1:", self.loss_G_L1.shape)
+        print("\tself.loss_G:", self.loss_G.shape)
 
     def optimize_parameters(self):
+        print()
+        print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
         self.forward()                   # compute fake images: G(A)
         # update D
         self.set_requires_grad(self.netD, True)  # enable backprop for D
@@ -125,3 +142,4 @@ class Pix2PixModel(BaseModel):
         self.optimizer_G.zero_grad()        # set G's gradients to zero
         self.backward_G()                   # calculate graidents for G
         self.optimizer_G.step()             # udpate G's weights
+        print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
