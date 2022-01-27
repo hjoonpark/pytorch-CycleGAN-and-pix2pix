@@ -122,7 +122,8 @@ class BaseModel(ABC):
             else:
                 scheduler.step()
 
-        lr = self.optimizers[0].param_groups[0]['lr']
+        lr = self.opt
+        imizers[0].param_groups[0]['lr']
         print('learning rate %.7f -> %.7f' % (old_lr, lr))
 
     def get_current_visuals(self):

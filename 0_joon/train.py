@@ -98,7 +98,7 @@ if __name__ == "__main__":
     parser.add_argument("--save_freq", type=int, default=1000)
 
     opt, _ = parser.parse_known_args()
-    # opt.max_dataset_size = 123
+    opt.max_dataset_size = 1000
     dataset = create_dataset(opt)
     print("{} data loaded".format(len(dataset)))
 
